@@ -16,7 +16,7 @@ public class PlayerController : MonoBehaviour
 
     private Rigidbody2D rb;
     private SpriteRenderer spriteRenderer;
-    private PolygonCollider2D polyCol;
+    private BoxCollider2D boxCol; 
 
     private bool isGrounded = true;
     private int currentRunFrame;
@@ -29,9 +29,13 @@ public class PlayerController : MonoBehaviour
     {
         rb = GetComponent<Rigidbody2D>();
         spriteRenderer = GetComponent<SpriteRenderer>();
-        polyCol = GetComponent<PolygonCollider2D>();
+        boxCol = GetComponent<BoxCollider2D>();
 
         rb.gravityScale = gravityScale;
+        
+        // İlk sprite'ı ata ama collider'a DOKUNMA (elle ayarladığımız kalsın)
+        if (runSprites.Length > 0) spriteRenderer.sprite = runSprites[0];
+        
         ChangeState(PlayerState.Run);
     }
 
@@ -44,7 +48,6 @@ public class PlayerController : MonoBehaviour
             Jump();
         }
 
-        // Koşma animasyonu sırasında sadece görsel değişir, collider HESAPLANMAZ.
         if (currentState == PlayerState.Run && isGrounded)
         {
             HandleRunAnimation();
@@ -54,16 +57,11 @@ public class PlayerController : MonoBehaviour
     private void HandleRunAnimation()
     {
         animationTimer += Time.deltaTime;
-
         if (animationTimer >= animationSpeed)
         {
             animationTimer = 0f;
             currentRunFrame = (currentRunFrame + 1) % runSprites.Length;
             spriteRenderer.sprite = runSprites[currentRunFrame];
-            
-            // BURASI ÖNEMLİ: Koşma kareleri birbirine çok benzediği için 
-            // burada UpdateColliderShape() ÇAĞIRMIYORUZ. 
-            // İlk karedeki collider ikisi için de yeterli olacaktır.
         }
     }
 
@@ -71,22 +69,18 @@ public class PlayerController : MonoBehaviour
     {
         rb.velocity = new Vector2(rb.velocity.x, 0f);
         rb.AddForce(Vector2.up * jumpForce, ForceMode2D.Impulse);
-        
         isGrounded = false;
-        ChangeState(PlayerState.Jump); // Zıplama görseline geçer ve collider'ı BİR KEZ günceller.
+        ChangeState(PlayerState.Jump);
     }
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
         if (collision.gameObject.CompareTag("Ground"))
         {
-            if (!isGrounded) // Sadece havadan yere ilk düştüğünde çalışır
+            isGrounded = true;
+            if (!GameManager.Instance.isGameOver)
             {
-                isGrounded = true;
-                if (!GameManager.Instance.isGameOver)
-                {
-                    ChangeState(PlayerState.Run); // Koşma görseline döner ve collider'ı BİR KEZ günceller.
-                }
+                ChangeState(PlayerState.Run);
             }
         }
     }
@@ -124,18 +118,7 @@ public class PlayerController : MonoBehaviour
                 if (deadSprite != null) spriteRenderer.sprite = deadSprite;
                 break;
         }
-
-        // Sadece durum değiştiğinde (Koşma->Zıplama veya Zıplama->Koşma) hesapla
-        UpdateColliderShape();
-    }
-
-    private void UpdateColliderShape()
-    {
-        if (polyCol != null && spriteRenderer.sprite != null)
-        {
-            // Yöntem: Mevcut collider yollarını temizleyip yeniden oluşturmak.
-            // Bu işlem ChangeState içinde olduğu için sadece zıplarken ve yere inerken tetiklenir.
-            polyCol.pathCount = 0; 
-        }
+        // Burada UpdateColliderSize() gibi bir fonksiyon çağırmıyoruz! 
+        // Collider'ı bir kez ayarlayacağız ve hep öyle kalacak.
     }
 }
