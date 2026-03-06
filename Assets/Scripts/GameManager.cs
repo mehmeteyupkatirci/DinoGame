@@ -59,7 +59,7 @@ public class GameManager : MonoBehaviour
 
         // Update Score
         score += Time.deltaTime * gameSpeed;
-        scoreText.text = "Score: " + Mathf.FloorToInt(score).ToString("D5");
+        scoreText.text = "" + Mathf.FloorToInt(score).ToString("D5");
 
         // Increase Speed over time
         if (gameSpeed < maxGameSpeed)

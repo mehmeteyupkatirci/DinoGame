@@ -6,12 +6,12 @@ public class PlayerController : MonoBehaviour
     public float jumpForce = 12f;
     public float gravityScale = 3f;
     
-    [Header("Görseller (Sprites)")]
+    [Header("Sprites")]
     public Sprite[] runSprites; 
     public Sprite jumpSprite;
     public Sprite deadSprite;
 
-    [Header("Animasyon Ayarları")]
+    [Header("Animation Settings")]
     public float animationSpeed = 0.15f; 
 
     private Rigidbody2D rb;
@@ -33,7 +33,6 @@ public class PlayerController : MonoBehaviour
 
         rb.gravityScale = gravityScale;
         
-        // İlk sprite'ı ata ama collider'a DOKUNMA (elle ayarladığımız kalsın)
         if (runSprites.Length > 0) spriteRenderer.sprite = runSprites[0];
         
         ChangeState(PlayerState.Run);
@@ -118,7 +117,5 @@ public class PlayerController : MonoBehaviour
                 if (deadSprite != null) spriteRenderer.sprite = deadSprite;
                 break;
         }
-        // Burada UpdateColliderSize() gibi bir fonksiyon çağırmıyoruz! 
-        // Collider'ı bir kez ayarlayacağız ve hep öyle kalacak.
     }
 }

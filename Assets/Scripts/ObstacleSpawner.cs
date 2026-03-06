@@ -6,16 +6,23 @@ public class ObstacleSpawner : MonoBehaviour
     [Header("Spawn Settings")]
     public GameObject cactusPrefab;
     public GameObject birdPrefab;
+    public GameObject coinPrefab;
     
     public float minSpawnTime = 1f;
     public float maxSpawnTime = 2.5f;
     
+    [Header("Coin Settings")]
+    [Range(0, 1)] public float coinSpawnChance = 0.5f; // Her engel dalgasında altın çıkma şansı
+    public float minCoinY = -1.0f; // Dinozorun yerdeyken kafasıyla çarpabileceği alt sınır
+    public float maxCoinY = 2.0f;  // Dinozorun zıplayınca ulaşabileceği üst sınır
+
     private float spawnTimer;
 
     [Header("Pooling")]
     public int poolSize = 10;
     private List<GameObject> cactusPool;
     private List<GameObject> birdPool;
+    private List<GameObject> coinPool; // Altın havuzu eklendi
 
     private void Start()
     {
@@ -32,6 +39,13 @@ public class ObstacleSpawner : MonoBehaviour
         if (spawnTimer <= 0f)
         {
             SpawnObstacle();
+            
+            // Her engel çıktığında şansa bağlı altın çıkar
+            if (Random.value < coinSpawnChance)
+            {
+                SpawnCoin();
+            }
+
             SetRandomSpawnTimer();
         }
     }
@@ -40,22 +54,38 @@ public class ObstacleSpawner : MonoBehaviour
     {
         cactusPool = new List<GameObject>();
         birdPool = new List<GameObject>();
+        coinPool = new List<GameObject>();
 
         for (int i = 0; i < poolSize; i++)
         {
-            GameObject cactus = Instantiate(cactusPrefab, transform.position, Quaternion.identity);
-            cactus.SetActive(false);
-            cactusPool.Add(cactus);
+            CreatePooledObject(cactusPrefab, cactusPool);
+            CreatePooledObject(birdPrefab, birdPool);
+            CreatePooledObject(coinPrefab, coinPool);
+        }
+    }
 
-            GameObject bird = Instantiate(birdPrefab, transform.position + Vector3.up * 1.5f, Quaternion.identity);
-            bird.SetActive(false);
-            birdPool.Add(bird);
+    private void CreatePooledObject(GameObject prefab, List<GameObject> pool)
+    {
+        GameObject obj = Instantiate(prefab);
+        obj.SetActive(false);
+        pool.Add(obj);
+    }
+
+    private void SpawnCoin()
+    {
+        GameObject coin = GetPooledObject(coinPool);
+        if (coin != null)
+        {
+            // Yükseklik ayarı: Yer seviyesine göre ayarla
+            // Dinozorun zıplama gücüne göre buradaki Y değerlerini test ederek daraltabilirsin
+            float randomY = Random.Range(minCoinY, maxCoinY); 
+            coin.transform.position = new Vector3(transform.position.x + 2f, randomY, 0); // Engelin biraz arkasında çıksın
+            coin.SetActive(true);
         }
     }
 
     private void SpawnObstacle()
     {
-        // 70% chance for Cactus, 30% chance for Bird
         bool spawnBird = Random.value > 0.7f;
         List<GameObject> activePool = spawnBird ? birdPool : cactusPool;
 
@@ -63,9 +93,8 @@ public class ObstacleSpawner : MonoBehaviour
         
         if (obstacle != null)
         {
-            // Reset position to spawner position
             Vector3 spawnPos = transform.position;
-            if (spawnBird) spawnPos.y += 1.5f; // Elevate birds
+            if (spawnBird) spawnPos.y += 1.5f; 
 
             obstacle.transform.position = spawnPos;
             obstacle.SetActive(true);
@@ -74,20 +103,15 @@ public class ObstacleSpawner : MonoBehaviour
 
     private GameObject GetPooledObject(List<GameObject> pool)
     {
-        // Find the first inactive object in the pool
         foreach (GameObject obj in pool)
         {
-            if (!obj.activeInHierarchy)
-            {
-                return obj;
-            }
+            if (!obj.activeInHierarchy) return obj;
         }
-        return null; // Pool is full (unlikely with fast despawn, but safe)
+        return null; 
     }
 
     private void SetRandomSpawnTimer()
     {
-        // Decrease spawn time slightly as the game speeds up for consistent density
         float speedRatio = GameManager.Instance.initialGameSpeed / GameManager.Instance.gameSpeed;
         spawnTimer = Random.Range(minSpawnTime, maxSpawnTime) * speedRatio;
     }
