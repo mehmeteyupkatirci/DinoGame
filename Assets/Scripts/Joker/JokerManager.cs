@@ -18,8 +18,9 @@ public class JokerManager : MonoBehaviour
     private void Start()
     {
         // TEST: Oyuna Golden Joker eklenmiş gibi başla
-        EquipJoker(new GoldenJoker());
-        EquipJoker(new RandomJoker());
+         EquipJoker(new GoldenJoker());
+         EquipJoker(new RandomJoker());
+         EquipJoker(new SpeedFreakJoker());
     }
 
     public void EquipJoker(Joker newJoker)
