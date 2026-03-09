@@ -1,5 +1,4 @@
 using UnityEngine;
-using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using TMPro;
 
@@ -7,40 +6,39 @@ public class GameManager : MonoBehaviour
 {
     public static GameManager Instance { get; private set; }
 
-    [Header("Game Settings")]
-    public float initialGameSpeed = 5f;
-    public float speedMultiplier = 0.1f;
-    public float maxGameSpeed = 15f;
-    public float gameSpeed { get; private set; }
-    public bool isGameOver { get; private set; }
-
-    [Header("Day/Night Cycle")]
-    public Camera mainCamera;
-    public Color dayColor = Color.white;
-    public Color nightColor = new Color(0.1f, 0.1f, 0.1f);
-    public float cycleDuration = 30f; // Seconds per half cycle
-    private float cycleTimer = 0f;
-
-    [Header("UI Elements")]
+    [Header("UI References")]
+    public TextMeshProUGUI speedText;
+    public TextMeshProUGUI distanceText;
+    public TextMeshProUGUI goldText;
     public TextMeshProUGUI scoreText;
     public TextMeshProUGUI gameOverText;
     public TextMeshProUGUI restartText;
 
-    private float score = 0f;
+    [Header("Core Stats")]
+    public float gameSpeed;
+    public float initialGameSpeed = 5f;
+    public float speedMultiplier = 0.1f;
+    public float maxGameSpeed = 25f;
+
+    public float distance = 0f;
+    public float score = 0f;
+    // Not: Altın verisini InventoryManager'dan çekeceğiz ancak formülde kullanacağız.
+
+    [Header("Balatro Logic")]
+    public float currentMult = 1.0f;
+    public bool isGameOver { get; private set; }
 
     private void Awake()
     {
-        // Singleton pattern
-        if (Instance == null) { Instance = this; }
-        else { Destroy(gameObject); }
+        if (Instance == null) Instance = this;
+        else Destroy(gameObject);
     }
 
     private void Start()
     {
         gameSpeed = initialGameSpeed;
         isGameOver = false;
-        
-        // Hide Game Over UI
+
         gameOverText.gameObject.SetActive(false);
         restartText.gameObject.SetActive(false);
     }
@@ -49,7 +47,6 @@ public class GameManager : MonoBehaviour
     {
         if (isGameOver)
         {
-            // Handle restart
             if (Input.GetKeyDown(KeyCode.R) || Input.GetMouseButtonDown(0))
             {
                 SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
@@ -57,27 +54,60 @@ public class GameManager : MonoBehaviour
             return;
         }
 
-        // Update Score
-        score += Time.deltaTime * gameSpeed;
-        scoreText.text = "" + Mathf.FloorToInt(score).ToString("D5");
+        HandleMovementAndStats();
+        CalculateFinalScore();
+        UpdateUI();
+    }
 
-        // Increase Speed over time
+    private void HandleMovementAndStats()
+    {
+        // Zamanla hız artışı
         if (gameSpeed < maxGameSpeed)
         {
             gameSpeed += speedMultiplier * Time.deltaTime;
         }
 
-        // Handle Day/Night Cycle
-        cycleTimer += Time.deltaTime;
-        float lerpFactor = Mathf.PingPong(cycleTimer / cycleDuration, 1f);
-//        mainCamera.backgroundColor = Color.Lerp(dayColor, nightColor, lerpFactor);
+        // Mesafe artışı (Hız * Zaman)
+        distance += gameSpeed * Time.deltaTime;
+    }
+    private void CalculateFinalScore()
+    {
+        int currentGold = InventoryManager.Instance.currentGold;
+
+        // Temel hesaplama: Hız + Mesafe + Altın
+        float baseCalculation = gameSpeed + distance + currentGold;
+
+        // JOKERLER DEVREYE GİRİYOR:
+        // JokerManager'a gidip "bu skoru al ve Jokerlerin üzerinden geçir" diyoruz.
+        float scoreAfterJokers = JokerManager.Instance.ApplyJokerModifications(baseCalculation);
+
+        // En son Balatro Mult'u ekle
+        score = scoreAfterJokers * currentMult;
+    }
+
+    private void UpdateUI()
+    {
+        speedText.text = "Hız: " + gameSpeed.ToString("F1");
+        distanceText.text = "Mesafe: " + Mathf.FloorToInt(distance).ToString() + "m";
+        goldText.text = "Gold: " + InventoryManager.Instance.currentGold.ToString();
+        scoreText.text = "Score: " + Mathf.FloorToInt(score).ToString();
+    }
+
+    public void AddMult(float amount)
+    {
+        currentMult += amount;
+    }
+
+    // Jokerler aracılığıyla hızı doğrudan etkilemek için
+    public void ModifySpeed(float amount)
+    {
+        gameSpeed = Mathf.Clamp(gameSpeed + amount, 0, maxGameSpeed + 20);
     }
 
     public void GameOver()
     {
         isGameOver = true;
-        gameSpeed = 0f; // Stop objects from moving
-        
+        gameSpeed = 0f;
         gameOverText.gameObject.SetActive(true);
         restartText.gameObject.SetActive(true);
     }

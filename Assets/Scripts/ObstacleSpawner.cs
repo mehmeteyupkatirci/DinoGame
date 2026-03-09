@@ -76,8 +76,6 @@ public class ObstacleSpawner : MonoBehaviour
         GameObject coin = GetPooledObject(coinPool);
         if (coin != null)
         {
-            // Yükseklik ayarı: Yer seviyesine göre ayarla
-            // Dinozorun zıplama gücüne göre buradaki Y değerlerini test ederek daraltabilirsin
             float randomY = Random.Range(minCoinY, maxCoinY); 
             coin.transform.position = new Vector3(transform.position.x + 2f, randomY, 0); // Engelin biraz arkasında çıksın
             coin.SetActive(true);

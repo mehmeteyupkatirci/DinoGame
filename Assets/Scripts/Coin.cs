@@ -37,8 +37,8 @@ public class Coin : MonoBehaviour
     {
         if (collision.CompareTag("Player"))
         {
-            InventoryManager.Instance.AddGold(1);
-            gameObject.SetActive(false);
+            InventoryManager.Instance.AddGold(1); // Altın toplandığında envantere ekle ve Jokerleri tetikle
+            gameObject.SetActive(false); // Altını kapatıyoruz, havuza geri dönecek
         }
     }
 }

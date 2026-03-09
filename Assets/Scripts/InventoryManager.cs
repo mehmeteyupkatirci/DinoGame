@@ -1,6 +1,5 @@
 using TMPro;
 using UnityEngine;
-using UnityEngine.UI;
 
 public class InventoryManager : MonoBehaviour
 {
@@ -21,13 +20,20 @@ public class InventoryManager : MonoBehaviour
         UpdateGoldUI();
     }
 
+    // Altın eklendiğinde JokerManager'a haber verir
     public void AddGold(int amount)
     {
         currentGold += amount;
         UpdateGoldUI();
-        // Buraya isterseniz bir "Para kazanma sesi" ekleyebiliriz
+        
+        // Cüzdana para girdiğinde JokerManager'daki Jokerleri tetikle
+        if (JokerManager.Instance != null)
+        {
+            JokerManager.Instance.NotifyGoldCollected();
+        }
     }
 
+    // Dükkan için: Para harcama kontrolü
     public bool SpendGold(int amount)
     {
         if (currentGold >= amount)
@@ -36,14 +42,13 @@ public class InventoryManager : MonoBehaviour
             UpdateGoldUI();
             return true;
         }
-        return false; // Yetersiz bakiye
+        Debug.Log("Yetersiz altın!");
+        return false;
     }
 
     private void UpdateGoldUI()
     {
-        if (goldText != null)
-        {
-            goldText.text = "$" + currentGold.ToString();
-        }
+        if (goldText != null) 
+            goldText.text = "Gold: " + currentGold.ToString();
     }
 }
