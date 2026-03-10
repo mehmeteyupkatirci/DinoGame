@@ -1,34 +1,64 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 public class BackgroundScroller : MonoBehaviour
 {
-    public Transform bgPart1;
-    public Transform bgPart2;
-    public float width = 18f; 
+    public static BackgroundScroller Instance { get; private set; }
 
-    [Range(0f, 1f)]
-    [Tooltip("0.5 yaparsan arka plan oyun hızının yarısı kadar hızlanır. 1 yaparsan yerle aynı hızda gider.")]
-    public float scrollSpeedFactor = 0.5f; 
+    [Header("Current Biome")]
+    public BackgroundBiome currentBiome;
+    public float textureWidth = 19.2f; // Görsellerinin genişliği
 
-    private void Update()
+    private List<GameObject> activeLayers = new List<GameObject>();
+
+    private void Awake()
     {
-        // Oyun bittiyse durdur
-        if (GameManager.Instance.isGameOver) return;
-        float currentScrollSpeed = GameManager.Instance.gameSpeed * scrollSpeedFactor;
+        Instance = this;
+        InitializeBiome(currentBiome);
+    }
 
-        // Hareket ettir
-        bgPart1.Translate(Vector2.left * currentScrollSpeed * Time.deltaTime);
-        bgPart2.Translate(Vector2.left * currentScrollSpeed * Time.deltaTime);
+    public void InitializeBiome(BackgroundBiome biome)
+    {
+        // Eski katmanları temizle (Biyom değişirken)
+        foreach (GameObject obj in activeLayers) Destroy(obj);
+        activeLayers.Clear();
 
-        // Sonsuz döngü kontrolü
-        if (bgPart1.position.x < -width)
+        currentBiome = biome;
+
+        foreach (var layerData in currentBiome.layers)
         {
-            bgPart1.position = new Vector2(bgPart2.position.x + width, bgPart1.position.y);
-        }
-        
-        if (bgPart2.position.x < -width)
-        {
-            bgPart2.position = new Vector2(bgPart1.position.x + width, bgPart2.position.y);
+            CreateLayer(layerData);
         }
     }
+
+    private void CreateLayer(LayerData data)
+    {
+        // Katman için bir taşıyıcı obje oluştur
+        GameObject layerContainer = new GameObject("Layer_" + data.sprite.name);
+        layerContainer.transform.SetParent(this.transform);
+        activeLayers.Add(layerContainer);
+
+        // İki parça oluştur (Sonsuz döngü için)
+        CreatePart(layerContainer.transform, data, 0);
+        CreatePart(layerContainer.transform, data, textureWidth);
+
+        // Hareket scriptini otomatik ekle
+        var mover = layerContainer.AddComponent<LayerMover>();
+        mover.speedFactor = data.scrollSpeedFactor;
+        mover.width = textureWidth;
+    }
+
+   private void CreatePart(Transform parent, LayerData data, float startX)
+{
+    GameObject part = new GameObject(data.layerName + "_Part");
+    part.transform.SetParent(parent);
+    
+    // Scale ve Pozisyon ayarını uygula
+    part.transform.localScale = new Vector3(data.scale, data.scale, 1);
+    part.transform.localPosition = new Vector3(startX, data.yOffset, 0);
+
+    var renderer = part.AddComponent<SpriteRenderer>();
+    renderer.sprite = data.sprite;
+    renderer.sortingOrder = data.sortingOrder;
+}
 }
