@@ -48,17 +48,17 @@ public class BackgroundScroller : MonoBehaviour
         mover.width = textureWidth;
     }
 
-   private void CreatePart(Transform parent, LayerData data, float startX)
-{
-    GameObject part = new GameObject(data.layerName + "_Part");
-    part.transform.SetParent(parent);
-    
-    // Scale ve Pozisyon ayarını uygula
-    part.transform.localScale = new Vector3(data.scale, data.scale, 1);
-    part.transform.localPosition = new Vector3(startX, data.yOffset, 0);
+    private void CreatePart(Transform parent, LayerData data, float startX)
+    {
+        GameObject part = new GameObject(data.layerName + "_Part");
+        part.transform.SetParent(parent);
 
-    var renderer = part.AddComponent<SpriteRenderer>();
-    renderer.sprite = data.sprite;
-    renderer.sortingOrder = data.sortingOrder;
-}
+        // Scale ve Pozisyon ayarını uygula
+        part.transform.localScale = new Vector3(data.scale, data.scale, 1);
+        part.transform.localPosition = new Vector3(startX, data.yOffset, 0);
+
+        var renderer = part.AddComponent<SpriteRenderer>();
+        renderer.sprite = data.sprite;
+        renderer.sortingOrder = data.sortingOrder;
+    }
 }

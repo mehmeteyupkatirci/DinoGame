@@ -14,15 +14,27 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   biomeName: ForestBiome
   layers:
-  - sprite: {fileID: 21300000, guid: c2a9d89740d128d4bacaacaa5f9e6a67, type: 3}
+  - layerName: Background
+    sprite: {fileID: 21300000, guid: c2a9d89740d128d4bacaacaa5f9e6a67, type: 3}
     scrollSpeedFactor: 0
     sortingOrder: 0
-  - sprite: {fileID: 21300000, guid: bdfd90c1cfadb324f9a503c371165862, type: 3}
+    scale: 1
+    yOffset: 0
+  - layerName: 
+    sprite: {fileID: 21300000, guid: bdfd90c1cfadb324f9a503c371165862, type: 3}
     scrollSpeedFactor: 0.4
     sortingOrder: 1
-  - sprite: {fileID: 21300000, guid: 232ab720a3f5a054ea997c2a5aa60146, type: 3}
+    scale: 0.86
+    yOffset: 0
+  - layerName: 
+    sprite: {fileID: 21300000, guid: 232ab720a3f5a054ea997c2a5aa60146, type: 3}
     scrollSpeedFactor: 0.5
     sortingOrder: 2
-  - sprite: {fileID: 21300000, guid: 3f40be159c3948546b2e525de0b09bc2, type: 3}
+    scale: 0.86
+    yOffset: 0
+  - layerName: 
+    sprite: {fileID: 21300000, guid: 3f40be159c3948546b2e525de0b09bc2, type: 3}
     scrollSpeedFactor: 0.7
-    sortingOrder: 3
+    sortingOrder: 301
+    scale: 0.86
+    yOffset: 0

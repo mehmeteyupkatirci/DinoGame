@@ -751,7 +751,7 @@ Transform:
   m_GameObject: {fileID: 1114869829}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -7.8451486, y: -2.3233657, z: 0.058868587}
+  m_LocalPosition: {x: -8.92, y: 2.59, z: 0.058868587}
   m_LocalScale: {x: 0.3, y: 0.3, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1337,8 +1337,8 @@ MonoBehaviour:
   minSpawnTime: 1
   maxSpawnTime: 2.5
   coinSpawnChance: 1
-  minCoinY: -2
-  maxCoinY: -0.5
+  minCoinY: -4
+  maxCoinY: -2.25
   poolSize: 10
 --- !u!4 &1620136939
 Transform:
@@ -1349,7 +1349,7 @@ Transform:
   m_GameObject: {fileID: 1620136937}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 8.823851, y: -2.5293655, z: 0.01055982}
+  m_LocalPosition: {x: 9.99, y: -4.04, z: 0.01055982}
   m_LocalScale: {x: 10, y: -2.5, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1815,8 +1815,8 @@ Transform:
   m_GameObject: {fileID: 2116017293}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -0.32614857, y: -3.6893656, z: 0.058868587}
-  m_LocalScale: {x: 25, y: 1, z: 0}
+  m_LocalPosition: {x: -0.15, y: -5.29, z: 0.058868587}
+  m_LocalScale: {x: 22.348251, y: 0.9640476, z: 0}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 493272017}
