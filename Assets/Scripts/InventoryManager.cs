@@ -21,13 +21,13 @@ public class InventoryManager : MonoBehaviour
     }
 
     // Altın eklendiğinde JokerManager'a haber verir
-    public void AddGold(int amount)
+    public void AddGold(int amount, bool notifyJokers = true)
     {
         currentGold += amount;
         UpdateGoldUI();
-        
-        // Cüzdana para girdiğinde JokerManager'daki Jokerleri tetikle
-        if (JokerManager.Instance != null)
+
+        // Sadece notifyJokers true ise ve yerden toplandıysa tetikle
+        if (notifyJokers && JokerManager.Instance != null)
         {
             JokerManager.Instance.NotifyGoldCollected();
         }
@@ -48,7 +48,7 @@ public class InventoryManager : MonoBehaviour
 
     private void UpdateGoldUI()
     {
-        if (goldText != null) 
+        if (goldText != null)
             goldText.text = "Gold: " + currentGold.ToString();
     }
 }
