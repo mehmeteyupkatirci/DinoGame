@@ -12,9 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 907cc42e3a2b91c40821ad20d3585c03, type: 3}
   m_Name: WayfarerJoker
   m_EditorClassIdentifier: 
-  jokerName: 
-  description: 
-  jokerIcon: {fileID: 0}
-  unlockPrice: 0
+  jokerName: Gezgin
+  description: "Her 100 metrede Mult de\u011Ferini +0.2 art\u0131r\u0131r."
+  jokerIcon: {fileID: 21300000, guid: 7d518c3d243236b438b54e730b0ac065, type: 3}
+  unlockPrice: 30
   isUnlocked: 0
-  jokerClassName: 
+  jokerClassName: WayfarerJoker

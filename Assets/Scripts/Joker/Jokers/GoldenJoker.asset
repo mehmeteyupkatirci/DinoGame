@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   jokerName: Golden Joker
   description: "Toplam skoru sahip oldu\u011Fun alt\u0131n say\u0131s\u0131yla \xE7arpar."
-  jokerIcon: {fileID: 0}
+  jokerIcon: {fileID: 21300000, guid: 734ae8f87018aef4480de6bd8fb99b9d, type: 3}
   unlockPrice: 50
   isUnlocked: 0
   jokerClassName: GoldenJoker

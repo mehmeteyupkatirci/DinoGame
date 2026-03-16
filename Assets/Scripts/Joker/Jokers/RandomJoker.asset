@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   jokerName: "Kataliz\xF6r"
   description: "Skor form\xFCl\xFCn\xFC (H\u0131z * Mesafe * Alt\u0131n) yapar."
-  jokerIcon: {fileID: 0}
+  jokerIcon: {fileID: 21300000, guid: 8bdc8a3769877464eafe322601cf9e74, type: 3}
   unlockPrice: 100
   isUnlocked: 0
   jokerClassName: RandomJoker
